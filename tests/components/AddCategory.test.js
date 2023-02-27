@@ -14,8 +14,9 @@ describe('Testing of <AddCategory/> component', () => {
 
   test("It should call onNewCategory if the input have at least one value", () => {
     const inputValue = "Batman";
-    
-    render(<AddCategory onNewValue={() => {}} />);
+    const onNewValue = jest.fn()
+
+    render(<AddCategory onNewValue={onNewValue} />);
 
     const input = screen.getByRole("textbox");
     const form = screen.getByRole("form");
@@ -25,6 +26,20 @@ describe('Testing of <AddCategory/> component', () => {
 
     //screen.debug();
     expect(input.value).toBe("");
+    expect(onNewValue).toHaveBeenCalled();
+    expect(onNewValue).toHaveBeenCalledTimes(1);
+    expect(onNewValue).toHaveBeenCalledWith(inputValue);
   });
+  
+  test("It shouldn't call onNewCategory if input is empty", () => {
+    const onNewValue = jest.fn()
+    render(<AddCategory onNewValue={onNewValue} />);
 
+    const form = screen.getByRole("form");
+
+    fireEvent.submit(form);
+
+    expect(onNewValue).toHaveBeenCalledTimes(0);
+    expect(onNewValue).not.toHaveBeenCalled();
+  });
 });
